@@ -94,19 +94,19 @@ public class Ventana extends JFrame {
     };
 
     // Atributos de los productos
-    private JPanel producto1 = crearProducto("Converse", 120, "Tenis Converse Chuck Taylor All Star Negros en Bota de Lona Unisex", converse, coloresConverse);
-    private JPanel producto2 = crearProducto("Air Force 1", 80, "Tenis Unisex Nike Air Force 1 '07 Cw2288-111", airForce, coloresAirForce);
-    private JPanel producto3 = crearProducto("Air Jordan 3", 200, "Nike WMNS Air Jordan 3 RETRO", airJordan, coloresJordan);
-    private JPanel producto4 = crearProducto("Campus 00s", 200, "Tenis Adidas Campus 00's Clasico Original", campus, coloresCampus);
-    private JPanel producto5 = crearProducto("Stars", 200, "TENIS HOMBRE STARS CU413", stars, coloresStars);
-    private JPanel producto6 = crearProducto("UA Rogue 4", 200, "Tenis deportivos Under Armour ligeros con suela blanca texturizada.", under, coloresUnder);
+    private JPanel producto1 = crearProducto("Converse", 1599, "Tenis Converse Chuck Taylor All Star Negros en Bota de Lona Unisex", converse, coloresConverse);
+    private JPanel producto2 = crearProducto("Air Force 1", 2399, "Tenis Unisex Nike Air Force 1 '07 Cw2288-111", airForce, coloresAirForce);
+    private JPanel producto3 = crearProducto("Air Jordan 3", 4299, "Nike WMNS Air Jordan 3 RETRO", airJordan, coloresJordan);
+    private JPanel producto4 = crearProducto("Campus 00s", 2299, "Tenis Adidas Campus 00's Clasico Original", campus, coloresCampus);
+    private JPanel producto5 = crearProducto("Stars", 799, "TENIS HOMBRE STARS CU413", stars, coloresStars);
+    private JPanel producto6 = crearProducto("UA Rogue 4", 1699, "Tenis deportivos Under Armour ligeros con suela blanca texturizada.", under, coloresUnder);
 
     private JPanel listaProductos[] = {producto1, producto2, producto3, producto4, producto5, producto6};
 
     private JButton adelante, atras;
     private int rango = 3;
     private int interbalo = 1;
-    
+
     private final int anchoAnuncios = 900;
     private final int altoAnuncios = 400;
 
