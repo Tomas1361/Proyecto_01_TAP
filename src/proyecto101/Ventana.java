@@ -114,12 +114,11 @@ public class Ventana extends JFrame {
     // Paneles generales
     private JPanel panelNorte;
     private JPanel panelCentro;
+    private JPanel central;
     private JPanel panelProductos;
 
     // Atributos integrados del primer código (Ofertas)
-    private JLabel ImagenTeni;
-    private JLabel Desc;
-    
+
     // Atributos del menu hamburguesa y modo oscuro
     private JPanel panelMenu; // Panel lateral del menú
     private boolean activedMenu = false;
@@ -144,9 +143,10 @@ public class Ventana extends JFrame {
     private java.util.List<JPanel> favoritos = new ArrayList<>();
     // Arreglo para la ventana de Carrito
     private java.util.List<CarritoItem> carrito = new ArrayList<>();
-
+    
     // Clase interna para guardar datos del carrito
     private class CarritoItem {
+
         String nombre;
         ImageIcon imagen;
         int precio;
@@ -162,8 +162,11 @@ public class Ventana extends JFrame {
         super("Tienda de tenis");
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
 
         atajo(ventana);
+
+        central = new JPanel(new BorderLayout());
 
         adelante = new JButton(new ImageIcon(getClass().getResource("Adelante.png")));
         adelante.setContentAreaFilled(false);
@@ -205,7 +208,7 @@ public class Ventana extends JFrame {
                 mostrar(panelProductos);
             }
         });
-        
+
         // Inicializar las diferentes zonas de la ventana
         initNorte();
         initCentro(); // Aquí se integran las imágenes de las ofertas
@@ -223,32 +226,52 @@ public class Ventana extends JFrame {
         inicio.setFocusPainted(false);
         panelMenu.add(inicio);
 
-        JButton ofertas = new JButton("Ofertas");
-        ofertas.setForeground(Color.WHITE);
-        ofertas.setBackground(Color.BLACK);
-        ofertas.setBorderPainted(false);
-        ofertas.setFocusPainted(false);
-        panelMenu.add(ofertas);
-
         // Botón Modo Oscuro agregado del Código 1
         JButton oscuro = new JButton("Modo Oscuro");
         oscuro.setForeground(Color.WHITE);
         oscuro.setBackground(Color.BLACK);
         oscuro.setBorderPainted(false);
         oscuro.setFocusPainted(false);
-        oscuro.addActionListener(new ActionListener(){
+        oscuro.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 toggleModoOscuro();
             }
         });
         panelMenu.add(oscuro);
-
+        
+        JButton ofertas = new JButton("Creditos");
+        ofertas.setForeground(Color.WHITE);
+        ofertas.setBackground(Color.BLACK);
+        ofertas.setBorderPainted(false);
+        ofertas.setFocusPainted(false);
+        ofertas.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(panelCentro, """
+                                                    Creditos:
+                                                    Marcos García López
+                                                    Pedro Tomás Gutiérrez González
+                                                    Ricardo Ottmar Gutiérrez Guzmán
+                                                    Diego Palacio Flores
+                                                    Maria Guadalupe Zuñiga Alcantar""");
+            }
+            
+        });
+        panelMenu.add(ofertas);
+        
         panelMenu.setVisible(false); // empieza oculto
         add(panelMenu, BorderLayout.WEST);
+        
 
         // Agregar el panel de productos a la parte inferior
         add(panelProductos, BorderLayout.SOUTH);
+
+        central.add(panelNorte, BorderLayout.NORTH);
+        central.add(panelCentro, BorderLayout.CENTER);
+        central.add(panelProductos, BorderLayout.SOUTH);
+        add(central, BorderLayout.CENTER);
+        add(new JLabel("Claro/Oscuro -> Ctrl + T"), BorderLayout.SOUTH);
 
         // Configuración final de la ventana principal
         setSize(850, 600);
@@ -348,10 +371,10 @@ public class Ventana extends JFrame {
         btnMenu.setContentAreaFilled(false);
         btnMenu.setBorderPainted(false);
         btnMenu.setFocusPainted(false);
-        
+
         JLabel logo = new JLabel(new ImageIcon(getClass().getResource("logo.png")));
         btnCarrito = new JButton(new ImageIcon(getClass().getResource("carrito.png")));
-        
+
         // Funcionamiento del botón del carrito (Panel Superior)
         btnCarrito.addActionListener(new ActionListener() {
             @Override
@@ -359,6 +382,8 @@ public class Ventana extends JFrame {
                 JFrame ventanaCarrito = new JFrame("Carrito de Compras");
                 JPanel panelCarrito = new JPanel(new FlowLayout());
                 panelCarrito.setBackground(Color.WHITE);
+                JButton comprar = new JButton();
+                int total = 0;
                 
                 for (CarritoItem item : carrito) {
                     JPanel prod = new JPanel(new BorderLayout());
@@ -368,17 +393,18 @@ public class Ventana extends JFrame {
                             item.imagen.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)
                     ));
                     JLabel nombre = new JLabel(item.nombre, SwingConstants.CENTER);
+                    nombre.setBackground(Color.WHITE);
 
-                    JButton comprar = new JButton("Comprar");
                     comprar.setBackground(Color.BLACK);
                     comprar.setForeground(Color.WHITE);
-
                     prod.add(img, BorderLayout.CENTER);
                     prod.add(nombre, BorderLayout.NORTH);
-                    prod.add(comprar, BorderLayout.SOUTH);
 
                     panelCarrito.add(prod);
+                    total += item.precio;
+                    comprar.setText(String.format("Comprar $%d MNX", total));
                 }
+                    ventanaCarrito.add(comprar, BorderLayout.SOUTH);
                 ventanaCarrito.add(new JScrollPane(panelCarrito));
                 ventanaCarrito.setSize(600, 400);
                 ventanaCarrito.setLocationRelativeTo(ventana);
@@ -388,7 +414,7 @@ public class Ventana extends JFrame {
         btnCarrito.setContentAreaFilled(false);
         btnCarrito.setBorderPainted(false);
         btnCarrito.setFocusPainted(false);
-        
+
         btnBuscar = new JButton(new ImageIcon(getClass().getResource("favoritos.png")));
         btnBuscar.setContentAreaFilled(false);
         btnBuscar.setBorderPainted(false);
@@ -404,7 +430,7 @@ public class Ventana extends JFrame {
                 for (JPanel prod : favoritos) {
                     panelFavs.add(prod);
                 }
-                
+
                 ventanaFavs.add(new JScrollPane(panelFavs)); // scroll si hay muchos
                 ventanaFavs.setSize(600, 400);
                 ventanaFavs.setLocationRelativeTo(ventana);
@@ -424,8 +450,6 @@ public class Ventana extends JFrame {
         panelNorte.add(panelIzquierdo, BorderLayout.WEST);
         panelNorte.add(logo, BorderLayout.CENTER);
         panelNorte.add(panelDerecha, BorderLayout.EAST);
-
-        add(panelNorte, BorderLayout.NORTH);
     }
 
     private void initCentro() {
@@ -464,8 +488,6 @@ public class Ventana extends JFrame {
             }
         });
         timer.start();
-
-        add(panelCentro, BorderLayout.CENTER);
     }
 
     private void mostrarTenis(JPanel panel, ImageIcon[] listaIconos, ImageIcon[] listaColores, String desc, int prec, String nombre) {
@@ -477,7 +499,7 @@ public class Ventana extends JFrame {
         JLabel costo = new JLabel(String.format("$%d MXN", prec));
         JButton comprar = new JButton("Comprar");
         JButton btnCarrito = new JButton(new ImageIcon(getClass().getResource("Carrito_blanco.png")));
-        
+
         // Agregar producto a la ventana de carrito
         btnCarrito.addActionListener(new ActionListener() {
             @Override
@@ -487,7 +509,7 @@ public class Ventana extends JFrame {
             }
         });
         JCheckBox favs = new JCheckBox(new ImageIcon(getClass().getResource("favoritos.png")));
-        
+
         // Agregar producto a la ventana de favoritos
         favs.addItemListener(new ItemListener() {
             @Override
@@ -594,7 +616,7 @@ public class Ventana extends JFrame {
 
         Color fondo = modoOscuro ? Color.BLACK : Color.WHITE;
         Color texto = modoOscuro ? Color.WHITE : Color.BLACK;
-        
+
         // Cambiando dinámicamente el icono del menú hamburguesa
         btnMenu.setIcon(modoOscuro ? iconoMenuClaro : iconoMenuOscuro);
         btnCarrito.setIcon(modoOscuro ? iconoCarritoClaro : iconoCarritoOscuro);
@@ -614,7 +636,7 @@ public class Ventana extends JFrame {
         aplicarTema(panelMenu, fondo, texto);
         aplicarTema(panelCentro, fondo, texto);
         aplicarTema(panelProductos, fondo, texto);
-        
+
         ventana.revalidate();
         ventana.repaint();
     }
@@ -622,20 +644,20 @@ public class Ventana extends JFrame {
     private void aplicarTema(Component c, Color fondo, Color texto) {
         if (c instanceof JPanel) {
             c.setBackground(fondo);
-            for (Component hijo : ((JPanel)c).getComponents()) {
+            for (Component hijo : ((JPanel) c).getComponents()) {
                 aplicarTema(hijo, fondo, texto);
             }
         } else if (c instanceof JButton) {
             c.setBackground(fondo);
-            ((JButton)c).setForeground(texto);
+            ((JButton) c).setForeground(texto);
         } else if (c instanceof JLabel) {
-            ((JLabel)c).setForeground(texto);
+            ((JLabel) c).setForeground(texto);
         } else if (c instanceof JCheckBox) {
             c.setBackground(fondo);
-            ((JCheckBox)c).setForeground(texto);
+            ((JCheckBox) c).setForeground(texto);
         } else if (c instanceof JRadioButton) {
             c.setBackground(fondo);
-            ((JRadioButton)c).setForeground(texto);
+            ((JRadioButton) c).setForeground(texto);
         }
     }
 }
