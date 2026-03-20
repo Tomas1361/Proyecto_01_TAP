@@ -113,30 +113,48 @@ public class Ventana extends JFrame {
 
     // Paneles generales
     private JPanel panelNorte;
+    private JPanel panelCentro;
+    private JPanel panelProductos;
 
     // Atributos integrados del primer código (Ofertas)
     private JLabel ImagenTeni;
     private JLabel Desc;
-    //Atributos del menu hamburguesa
+    
+    // Atributos del menu hamburguesa y modo oscuro
     private JPanel panelMenu; // Panel lateral del menú
     private boolean activedMenu = false;
+    private boolean modoOscuro = false;
+    private JButton btnMenu;
+    private JButton btnCarrito;
+    private JButton btnBuscar;
+    private ImageIcon iconoMenuOscuro;
+    private ImageIcon iconoMenuClaro;
+    private ImageIcon iconoCarritoOscuro;
+    private ImageIcon iconoCarritoClaro;
+    private ImageIcon iconoFavsOscuro;
+    private ImageIcon iconoFavsClaro;
+    private ImageIcon iconoAdelanteClaro;
+    private ImageIcon iconoAdelanteOscuro;
+    private ImageIcon iconoAtrasClaro;
+    private ImageIcon iconoAtrasOscuro;
 
     private JFrame ventana = this;
 
-    //Arreglo para la ventana de "Favoritos"
+    // Arreglo para la ventana de "Favoritos"
     private java.util.List<JPanel> favoritos = new ArrayList<>();
-    //Arreglo para la ventana de Carrito
+    // Arreglo para la ventana de Carrito
     private java.util.List<CarritoItem> carrito = new ArrayList<>();
+
     // Clase interna para guardar datos del carrito
-
     private class CarritoItem {
-
         String nombre;
         ImageIcon imagen;
+        int precio;
 
-        CarritoItem(String nombre, ImageIcon imagen) {
+        CarritoItem(String nombre, ImageIcon imagen, int precio) {
             this.nombre = nombre;
             this.imagen = imagen;
+            this.precio = precio;
         }
     }
 
@@ -144,6 +162,8 @@ public class Ventana extends JFrame {
         super("Tienda de tenis");
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        atajo(ventana);
 
         adelante = new JButton(new ImageIcon(getClass().getResource("Adelante.png")));
         adelante.setContentAreaFilled(false);
@@ -155,7 +175,7 @@ public class Ventana extends JFrame {
         atras.setFocusPainted(false);
 
         // Configuración del panel de productos (Sur)
-        JPanel panelProductos = new JPanel();
+        panelProductos = new JPanel();
         panelProductos.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
         panelProductos.setBackground(Color.WHITE);
 
@@ -185,12 +205,13 @@ public class Ventana extends JFrame {
                 mostrar(panelProductos);
             }
         });
+        
         // Inicializar las diferentes zonas de la ventana
         initNorte();
         initCentro(); // Aquí se integran las imágenes de las ofertas
 
         panelMenu = new JPanel();
-        panelMenu.setBackground(Color.BLACK);
+        panelMenu.setBackground(Color.BLACK); // O LIGHT_GRAY según prefieras
         panelMenu.setPreferredSize(new Dimension(150, getHeight())); // ancho fijo
         panelMenu.setLayout(new BoxLayout(panelMenu, BoxLayout.Y_AXIS));
 
@@ -209,11 +230,22 @@ public class Ventana extends JFrame {
         ofertas.setFocusPainted(false);
         panelMenu.add(ofertas);
 
+        // Botón Modo Oscuro agregado del Código 1
+        JButton oscuro = new JButton("Modo Oscuro");
+        oscuro.setForeground(Color.WHITE);
+        oscuro.setBackground(Color.BLACK);
+        oscuro.setBorderPainted(false);
+        oscuro.setFocusPainted(false);
+        oscuro.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleModoOscuro();
+            }
+        });
+        panelMenu.add(oscuro);
+
         panelMenu.setVisible(false); // empieza oculto
         add(panelMenu, BorderLayout.WEST);
-
-        // Agregar el panel de productos a la parte inferior
-        add(panelProductos, BorderLayout.SOUTH);
 
         // Agregar el panel de productos a la parte inferior
         add(panelProductos, BorderLayout.SOUTH);
@@ -274,7 +306,7 @@ public class Ventana extends JFrame {
                 JPanel panelTenis = new JPanel(new FlowLayout());
 
                 panelTenis.setBackground(Color.WHITE);
-                mostrarTenis(panelTenis, listaIconos, listaColores, descripcion, precio);
+                mostrarTenis(panelTenis, listaIconos, listaColores, descripcion, precio, nombre);
                 detalleTenis.add(panelTenis);
                 detalleTenis.setSize(750, 500);
                 detalleTenis.setLocationRelativeTo(ventana);
@@ -291,8 +323,19 @@ public class Ventana extends JFrame {
         panelNorte.setBackground(Color.WHITE);
 
         // Carga de imágenes para el menú superior
-        JButton btnMenu = new JButton(new ImageIcon(getClass().getResource("menu.png")));
-//Funcionamiento del boton del menu
+        iconoMenuClaro = new ImageIcon(getClass().getResource("menuB.png"));
+        iconoMenuOscuro = new ImageIcon(getClass().getResource("menu.png"));
+        iconoFavsClaro = new ImageIcon(getClass().getResource("favoritosB.png"));
+        iconoFavsOscuro = new ImageIcon(getClass().getResource("favoritos.png"));
+        iconoCarritoClaro = new ImageIcon(getClass().getResource("carritoB.png"));
+        iconoCarritoOscuro = new ImageIcon(getClass().getResource("carrito.png"));
+        iconoAdelanteClaro = new ImageIcon(getClass().getResource("AdelanteB.png"));
+        iconoAdelanteOscuro = new ImageIcon(getClass().getResource("Adelante.png"));
+        iconoAtrasClaro = new ImageIcon(getClass().getResource("AtrasB.png"));
+        iconoAtrasOscuro = new ImageIcon(getClass().getResource("Atras.png"));
+
+        btnMenu = new JButton(iconoMenuOscuro);
+        // Funcionamiento del boton del menu
         btnMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -305,16 +348,18 @@ public class Ventana extends JFrame {
         btnMenu.setContentAreaFilled(false);
         btnMenu.setBorderPainted(false);
         btnMenu.setFocusPainted(false);
+        
         JLabel logo = new JLabel(new ImageIcon(getClass().getResource("logo.png")));
-        JButton btnCarrito = new JButton(new ImageIcon(getClass().getResource("carrito.png")));
-        //Funcionamiento del botón del carrito (Panel Superior)
+        btnCarrito = new JButton(new ImageIcon(getClass().getResource("carrito.png")));
+        
+        // Funcionamiento del botón del carrito (Panel Superior)
         btnCarrito.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFrame ventanaCarrito = new JFrame("Carrito de Compras");
                 JPanel panelCarrito = new JPanel(new FlowLayout());
                 panelCarrito.setBackground(Color.WHITE);
-
+                
                 for (CarritoItem item : carrito) {
                     JPanel prod = new JPanel(new BorderLayout());
                     prod.setBackground(Color.WHITE);
@@ -343,7 +388,8 @@ public class Ventana extends JFrame {
         btnCarrito.setContentAreaFilled(false);
         btnCarrito.setBorderPainted(false);
         btnCarrito.setFocusPainted(false);
-        JButton btnBuscar = new JButton(new ImageIcon(getClass().getResource("favoritos.png")));
+        
+        btnBuscar = new JButton(new ImageIcon(getClass().getResource("favoritos.png")));
         btnBuscar.setContentAreaFilled(false);
         btnBuscar.setBorderPainted(false);
         btnBuscar.setFocusPainted(false);
@@ -358,7 +404,7 @@ public class Ventana extends JFrame {
                 for (JPanel prod : favoritos) {
                     panelFavs.add(prod);
                 }
-
+                
                 ventanaFavs.add(new JScrollPane(panelFavs)); // scroll si hay muchos
                 ventanaFavs.setSize(600, 400);
                 ventanaFavs.setLocationRelativeTo(ventana);
@@ -383,8 +429,8 @@ public class Ventana extends JFrame {
     }
 
     private void initCentro() {
-        // Aquí incorporamos el código de tu primera clase
-        JPanel panelCentro = new JPanel(new GridBagLayout());
+        // Inicialización a nivel de clase
+        panelCentro = new JPanel(new GridBagLayout());
         panelCentro.setBackground(new Color(220, 220, 220));
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -420,10 +466,9 @@ public class Ventana extends JFrame {
         timer.start();
 
         add(panelCentro, BorderLayout.CENTER);
-
     }
 
-    private void mostrarTenis(JPanel panel, ImageIcon[] listaIconos, ImageIcon[] listaColores, String desc, int prec) {
+    private void mostrarTenis(JPanel panel, ImageIcon[] listaIconos, ImageIcon[] listaColores, String desc, int prec, String nombre) {
         JRadioButton colores[] = new JRadioButton[listaIconos.length];
         ButtonGroup grupoColores = new ButtonGroup();
         JLabel lblTeni = new JLabel(new ImageIcon(listaIconos[0].getImage().getScaledInstance(400, 400, Image.SCALE_SMOOTH)));
@@ -432,16 +477,18 @@ public class Ventana extends JFrame {
         JLabel costo = new JLabel(String.format("$%d MXN", prec));
         JButton comprar = new JButton("Comprar");
         JButton btnCarrito = new JButton(new ImageIcon(getClass().getResource("Carrito_blanco.png")));
-        //Agregar producto a la ventana de carrito
+        
+        // Agregar producto a la ventana de carrito
         btnCarrito.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                carrito.add(new CarritoItem(desc, listaIconos[0]));
+                carrito.add(new CarritoItem(nombre, listaIconos[0], prec));
                 JOptionPane.showMessageDialog(panel, "Producto agregado al carrito");
             }
         });
         JCheckBox favs = new JCheckBox(new ImageIcon(getClass().getResource("favoritos.png")));
-        //Agregar producto a la ventana de favoritos
+        
+        // Agregar producto a la ventana de favoritos
         favs.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -518,5 +565,77 @@ public class Ventana extends JFrame {
             listaProductos[i].setVisible(true);
         }
         panelProducto.add(adelante);
+    }
+
+    private void atajo(JFrame panel) {
+        panel.addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_T) {
+                    toggleModoOscuro();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+        });
+        panel.setFocusable(true);
+        panel.requestFocusInWindow();
+    }
+
+    private void toggleModoOscuro() {
+        modoOscuro = !modoOscuro;
+
+        Color fondo = modoOscuro ? Color.BLACK : Color.WHITE;
+        Color texto = modoOscuro ? Color.WHITE : Color.BLACK;
+        
+        // Cambiando dinámicamente el icono del menú hamburguesa
+        btnMenu.setIcon(modoOscuro ? iconoMenuClaro : iconoMenuOscuro);
+        btnCarrito.setIcon(modoOscuro ? iconoCarritoClaro : iconoCarritoOscuro);
+        btnBuscar.setIcon(modoOscuro ? iconoFavsClaro : iconoFavsOscuro);
+        adelante.setIcon(modoOscuro ? iconoAdelanteClaro : iconoAdelanteOscuro);
+        atras.setIcon(modoOscuro ? iconoAtrasClaro : iconoAtrasOscuro);
+
+        // Paneles principales
+        panelNorte.setBackground(fondo);
+        panelMenu.setBackground(Color.BLACK); // Mantiene el fondo del menú constante
+        panelCentro.setBackground(fondo);
+        panelProductos.setBackground(fondo);
+        getContentPane().setBackground(fondo);
+
+        // Aplicar tema a todos los componentes dentro de cada panel
+        aplicarTema(panelNorte, fondo, texto);
+        aplicarTema(panelMenu, fondo, texto);
+        aplicarTema(panelCentro, fondo, texto);
+        aplicarTema(panelProductos, fondo, texto);
+        
+        ventana.revalidate();
+        ventana.repaint();
+    }
+
+    private void aplicarTema(Component c, Color fondo, Color texto) {
+        if (c instanceof JPanel) {
+            c.setBackground(fondo);
+            for (Component hijo : ((JPanel)c).getComponents()) {
+                aplicarTema(hijo, fondo, texto);
+            }
+        } else if (c instanceof JButton) {
+            c.setBackground(fondo);
+            ((JButton)c).setForeground(texto);
+        } else if (c instanceof JLabel) {
+            ((JLabel)c).setForeground(texto);
+        } else if (c instanceof JCheckBox) {
+            c.setBackground(fondo);
+            ((JCheckBox)c).setForeground(texto);
+        } else if (c instanceof JRadioButton) {
+            c.setBackground(fondo);
+            ((JRadioButton)c).setForeground(texto);
+        }
     }
 }
