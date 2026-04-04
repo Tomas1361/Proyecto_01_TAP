@@ -9,6 +9,7 @@ public class Proyecto101 {
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ventana.setSize(900, 700);
         ventana.setResizable(false);
+        ventana.setLocationRelativeTo(null);
         ventana.setVisible(true);
     }
 }

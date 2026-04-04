@@ -5,14 +5,66 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
+/**
+ * Clase principal de la Interfaz Gráfica para la Tienda de Tenis.
+ * Hereda de JFrame y configura todos los paneles, eventos y productos.
+ */
 public class Ventana extends JFrame {
 
-    private ImageIcon converse[] = {
+    // ==============================================================================
+    // 1. CONSTANTES Y CONFIGURACIÓN
+    // ==============================================================================
+    private final int ANCHO_ANUNCIOS = 900;
+    private final int ALTO_ANUNCIOS = 400;
+    private final int PRODUCTOS_POR_PAGINA = 3; // Anteriormente 'rango'
+
+    // ==============================================================================
+    // 2. VARIABLES DE ESTADO
+    // ==============================================================================
+    private int intervalo = 1; // Página actual del catálogo de productos
+    private boolean menuActivado = false;
+    private boolean modoOscuro = false;
+    private boolean carritoComprado = false;
+    
+    // Listas para manejar el carrito y los favoritos
+    private java.util.List<JPanel> favoritos = new ArrayList<>();
+    private java.util.List<CarritoItem> carrito = new ArrayList<>();
+
+    // ==============================================================================
+    // 3. COMPONENTES DE LA INTERFAZ (UI)
+    // ==============================================================================
+    // Paneles principales
+    private JPanel central;
+    private JPanel panelNorte;
+    private JPanel panelCentro;
+    private JPanel panelProductos;
+    private JPanel panelMenu;
+
+    // Botones de navegación y utilidades
+    private JButton adelante;
+    private JButton atras;
+    private JButton btnMenu;
+    private JButton btnCarrito;
+    private JButton btnFavoritos; // Anteriormente btnBuscar
+
+    // ==============================================================================
+    // 4. RECURSOS GRÁFICOS (Iconos de la interfaz)
+    // ==============================================================================
+    private ImageIcon iconoMenuClaro, iconoMenuOscuro;
+    private ImageIcon iconoCarritoClaro, iconoCarritoOscuro;
+    private ImageIcon iconoFavsClaro, iconoFavsOscuro;
+    private ImageIcon iconoAdelanteClaro, iconoAdelanteOscuro;
+    private ImageIcon iconoAtrasClaro, iconoAtrasOscuro;
+
+    // ==============================================================================
+    // 5. DATOS DEL CATÁLOGO (Imágenes de los tenis)
+    // ==============================================================================
+    private ImageIcon[] converse = {
         new ImageIcon(getClass().getResource("ConverseNegro.png")),
         new ImageIcon(getClass().getResource("ConverseAzul.png")),
         new ImageIcon(getClass().getResource("ConverseRojo.png"))
     };
-    private ImageIcon coloresConverse[] = {
+    private ImageIcon[] coloresConverse = {
         new ImageIcon(getClass().getResource("Negro.png")),
         new ImageIcon(getClass().getResource("Azul.png")),
         new ImageIcon(getClass().getResource("Rojo.png")),
@@ -20,25 +72,28 @@ public class Ventana extends JFrame {
         new ImageIcon(getClass().getResource("Borde_Azul.png")),
         new ImageIcon(getClass().getResource("Borde_Rojo.png"))
     };
-    private ImageIcon airForce[] = {
+    
+    private ImageIcon[] airForce = {
         new ImageIcon(getClass().getResource("AirForceBlanco.png")),
         new ImageIcon(getClass().getResource("AirForceNegro.png")),
         new ImageIcon(getClass().getResource("AirForceRojo.png"))
     };
-    private ImageIcon coloresAirForce[] = {
+    private ImageIcon[] coloresAirForce = {
         new ImageIcon(getClass().getResource("Blanco.png")),
         new ImageIcon(getClass().getResource("Blanco_Negro.png")),
         new ImageIcon(getClass().getResource("Blanco_Rojo.png")),
         new ImageIcon(getClass().getResource("Borde_Blanco.png")),
         new ImageIcon(getClass().getResource("Borde_Blanco_Negro.png")),
-        new ImageIcon(getClass().getResource("Borde_Blanco_Rojo.png")),};
-    private ImageIcon airJordan[] = {
+        new ImageIcon(getClass().getResource("Borde_Blanco_Rojo.png"))
+    };
+    
+    private ImageIcon[] airJordan = {
         new ImageIcon(getClass().getResource("AirJordanBYN.png")),
         new ImageIcon(getClass().getResource("AirJordanAzul.png")),
         new ImageIcon(getClass().getResource("AirJordanBlanco.png")),
         new ImageIcon(getClass().getResource("AirJordanNegro.png"))
     };
-    private ImageIcon coloresJordan[] = {
+    private ImageIcon[] coloresJordan = {
         new ImageIcon(getClass().getResource("Blanco_Negro.png")),
         new ImageIcon(getClass().getResource("Blanco_Azul.png")),
         new ImageIcon(getClass().getResource("Blanco.png")),
@@ -48,13 +103,14 @@ public class Ventana extends JFrame {
         new ImageIcon(getClass().getResource("Borde_Blanco.png")),
         new ImageIcon(getClass().getResource("Borde_Negro.png"))
     };
-    private ImageIcon campus[] = {
+    
+    private ImageIcon[] campus = {
         new ImageIcon(getClass().getResource("Campus00sBlanco.png")),
         new ImageIcon(getClass().getResource("Campus00sNCR.png")),
         new ImageIcon(getClass().getResource("Campus00sNegro.png")),
         new ImageIcon(getClass().getResource("Campus00sNegroAzul.png"))
     };
-    private ImageIcon coloresCampus[] = {
+    private ImageIcon[] coloresCampus = {
         new ImageIcon(getClass().getResource("Blanco.png")),
         new ImageIcon(getClass().getResource("Blanco_Negro_Rojo.png")),
         new ImageIcon(getClass().getResource("Negro.png")),
@@ -64,24 +120,26 @@ public class Ventana extends JFrame {
         new ImageIcon(getClass().getResource("Borde_Negro.png")),
         new ImageIcon(getClass().getResource("Borde_Azul.png"))
     };
-    private ImageIcon stars[] = {
+    
+    private ImageIcon[] stars = {
         new ImageIcon(getClass().getResource("StarsNegros.png")),
         new ImageIcon(getClass().getResource("StarsAmarillos.png"))
     };
-    private ImageIcon coloresStars[] = {
+    private ImageIcon[] coloresStars = {
         new ImageIcon(getClass().getResource("Blanco_Negro.png")),
         new ImageIcon(getClass().getResource("Amarillo_Blanco_Azul.png")),
         new ImageIcon(getClass().getResource("Borde_Blanco_Negro.png")),
         new ImageIcon(getClass().getResource("Borde_Amarillo_Blanco_Azul.png"))
     };
-    private ImageIcon under[] = {
+    
+    private ImageIcon[] under = {
         new ImageIcon(getClass().getResource("Under_Negro.png")),
         new ImageIcon(getClass().getResource("Under_Gris.png")),
         new ImageIcon(getClass().getResource("Under_Azul.png")),
         new ImageIcon(getClass().getResource("Under_Rojo.png")),
         new ImageIcon(getClass().getResource("Under_Verde.png"))
     };
-    private ImageIcon coloresUnder[] = {
+    private ImageIcon[] coloresUnder = {
         new ImageIcon(getClass().getResource("Negro.png")),
         new ImageIcon(getClass().getResource("Gris.png")),
         new ImageIcon(getClass().getResource("Azul.png")),
@@ -94,59 +152,13 @@ public class Ventana extends JFrame {
         new ImageIcon(getClass().getResource("Borde_Verde.png"))
     };
 
-    // Atributos de los productos
-    private JPanel producto1 = crearProducto("Converse", 1599, "Tenis Converse Chuck Taylor All Star Negros en Bota de Lona Unisex", converse, coloresConverse);
-    private JPanel producto2 = crearProducto("Air Force 1", 2399, "Tenis Unisex Nike Air Force 1 '07 Cw2288-111", airForce, coloresAirForce);
-    private JPanel producto3 = crearProducto("Air Jordan 3", 4299, "Nike WMNS Air Jordan 3 RETRO", airJordan, coloresJordan);
-    private JPanel producto4 = crearProducto("Campus 00s", 2299, "Tenis Adidas Campus 00's Clasico Original", campus, coloresCampus);
-    private JPanel producto5 = crearProducto("Stars", 799, "TENIS HOMBRE STARS CU413", stars, coloresStars);
-    private JPanel producto6 = crearProducto("UA Rogue 4", 1699, "Tenis deportivos Under Armour ligeros con suela blanca texturizada.", under, coloresUnder);
+    // Array que contendrá todos los paneles de productos generados
+    private JPanel[] listaProductos;
 
-    private JPanel listaProductos[] = {producto1, producto2, producto3, producto4, producto5, producto6};
-
-    private JButton adelante, atras;
-    private int rango = 3;
-    private int interbalo = 1;
-
-    private final int anchoAnuncios = 900;
-    private final int altoAnuncios = 400;
-
-    // Paneles generales
-    private JPanel panelNorte;
-    private JPanel panelCentro;
-    private JPanel central;
-    private JPanel panelProductos;
-
-    // Atributos integrados del primer código (Ofertas)
-
-    // Atributos del menu hamburguesa y modo oscuro
-    private JPanel panelMenu; // Panel lateral del menú
-    private boolean activedMenu = false;
-    private boolean modoOscuro = false;
-    private JButton btnMenu;
-    private JButton btnCarrito;
-    private JButton btnBuscar;
-    private ImageIcon iconoMenuOscuro;
-    private ImageIcon iconoMenuClaro;
-    private ImageIcon iconoCarritoOscuro;
-    private ImageIcon iconoCarritoClaro;
-    private ImageIcon iconoFavsOscuro;
-    private ImageIcon iconoFavsClaro;
-    private ImageIcon iconoAdelanteClaro;
-    private ImageIcon iconoAdelanteOscuro;
-    private ImageIcon iconoAtrasClaro;
-    private ImageIcon iconoAtrasOscuro;
-
-    private JFrame ventana = this;
-
-    // Arreglo para la ventana de "Favoritos"
-    private java.util.List<JPanel> favoritos = new ArrayList<>();
-    // Arreglo para la ventana de Carrito
-    private java.util.List<CarritoItem> carrito = new ArrayList<>();
-    
-    // Clase interna para guardar datos del carrito
+    // ==============================================================================
+    // CLASE INTERNA PARA EL CARRITO
+    // ==============================================================================
     private class CarritoItem {
-
         String nombre;
         ImageIcon imagen;
         int precio;
@@ -158,129 +170,222 @@ public class Ventana extends JFrame {
         }
     }
 
+    // ==============================================================================
+    // CONSTRUCTOR PRINCIPAL
+    // ==============================================================================
     public Ventana() {
         super("Tienda de tenis");
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
 
-        atajo(ventana);
+        // Habilitar atajo de teclado para modo oscuro
+        atajoTeclado();
 
         central = new JPanel(new BorderLayout());
 
-        adelante = new JButton(new ImageIcon(getClass().getResource("Adelante.png")));
-        adelante.setContentAreaFilled(false);
-        adelante.setBorderPainted(false);
-        adelante.setFocusPainted(false);
-        atras = new JButton(new ImageIcon(getClass().getResource("Atras.png")));
-        atras.setContentAreaFilled(false);
-        atras.setBorderPainted(false);
-        atras.setFocusPainted(false);
+        // Cargar iconos de botones de navegación
+        iconoAdelanteClaro = new ImageIcon(getClass().getResource("AdelanteB.png"));
+        iconoAdelanteOscuro = new ImageIcon(getClass().getResource("Adelante.png"));
+        iconoAtrasClaro = new ImageIcon(getClass().getResource("AtrasB.png"));
+        iconoAtrasOscuro = new ImageIcon(getClass().getResource("Atras.png"));
 
-        // Configuración del panel de productos (Sur)
-        panelProductos = new JPanel();
-        panelProductos.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        adelante = configurarBotonTransparente(new JButton(iconoAdelanteOscuro));
+        atras = configurarBotonTransparente(new JButton(iconoAtrasOscuro));
+
+        // Configuración del panel inferior (Catálogo de productos)
+        panelProductos = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         panelProductos.setBackground(Color.WHITE);
 
-        panelProductos.add(atras, BorderLayout.WEST);
-        mostrar(panelProductos);
+        // Inicializar los productos
+        inicializarProductos();
 
-        atras.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (interbalo > 1) {
-                    interbalo--;
-                } else {
-                    interbalo = 2;
-                }
-                mostrar(panelProductos);
+        // Configurar acciones de botones de navegación del catálogo
+        atras.addActionListener(e -> {
+            if (intervalo > 1) {
+                intervalo--;
+            } else {
+                intervalo = 2; // Si hay 6 productos y paginamos de 3 en 3, la última página es 2
             }
+            mostrarProductosVisibles();
         });
 
-        adelante.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (interbalo < (listaProductos.length / 3)) {
-                    interbalo++;
-                } else {
-                    interbalo = 1;
-                }
-                mostrar(panelProductos);
+        adelante.addActionListener(e -> {
+            int maxIntervalo = (int) Math.ceil((double) listaProductos.length / PRODUCTOS_POR_PAGINA);
+            if (intervalo < maxIntervalo) {
+                intervalo++;
+            } else {
+                intervalo = 1;
             }
+            mostrarProductosVisibles();
         });
 
-        // Inicializar las diferentes zonas de la ventana
+        // Inicializar las diferentes zonas de la ventana principal
         initNorte();
-        initCentro(); // Aquí se integran las imágenes de las ofertas
+        initMenuLateral();
+        initCentro(); // Aquí se integran las imágenes del carrusel de ofertas
 
-        panelMenu = new JPanel();
-        panelMenu.setBackground(Color.BLACK); // O LIGHT_GRAY según prefieras
-        panelMenu.setPreferredSize(new Dimension(150, getHeight())); // ancho fijo
-        panelMenu.setLayout(new BoxLayout(panelMenu, BoxLayout.Y_AXIS));
+        // Mostrar los primeros productos al iniciar
+        mostrarProductosVisibles();
 
-        // Ejemplo de opciones dentro del menú
-        JButton inicio = new JButton("Inicio");
-        inicio.setForeground(Color.WHITE);
-        inicio.setBackground(Color.BLACK);
-        inicio.setBorderPainted(false);
-        inicio.setFocusPainted(false);
-        panelMenu.add(inicio);
-
-        // Botón Modo Oscuro agregado del Código 1
-        JButton oscuro = new JButton("Modo Oscuro");
-        oscuro.setForeground(Color.WHITE);
-        oscuro.setBackground(Color.BLACK);
-        oscuro.setBorderPainted(false);
-        oscuro.setFocusPainted(false);
-        oscuro.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                toggleModoOscuro();
-            }
-        });
-        panelMenu.add(oscuro);
-        
-        JButton ofertas = new JButton("Creditos");
-        ofertas.setForeground(Color.WHITE);
-        ofertas.setBackground(Color.BLACK);
-        ofertas.setBorderPainted(false);
-        ofertas.setFocusPainted(false);
-        ofertas.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(panelCentro, """
-                                                    Creditos:
-                                                    Marcos García López
-                                                    Pedro Tomás Gutiérrez González
-                                                    Ricardo Ottmar Gutiérrez Guzmán
-                                                    Diego Palacio Flores
-                                                    Maria Guadalupe Zuñiga Alcantar""");
-            }
-            
-        });
-        panelMenu.add(ofertas);
-        
-        panelMenu.setVisible(false); // empieza oculto
-        add(panelMenu, BorderLayout.WEST);
-        
-
-        // Agregar el panel de productos a la parte inferior
-        add(panelProductos, BorderLayout.SOUTH);
-
+        // Ensamblar la ventana
         central.add(panelNorte, BorderLayout.NORTH);
         central.add(panelCentro, BorderLayout.CENTER);
         central.add(panelProductos, BorderLayout.SOUTH);
+        
         add(central, BorderLayout.CENTER);
-        add(new JLabel("Claro/Oscuro -> Ctrl + T"), BorderLayout.SOUTH);
-
-        // Configuración final de la ventana principal
-        setSize(850, 600);
-        setLocationRelativeTo(null); // Centra la ventana en la pantalla
-        setVisible(true);
+        add(new JLabel("  Claro/Oscuro -> Ctrl + T"), BorderLayout.SOUTH);
     }
 
-    private JPanel crearProducto(String nombre, int precio, String descripcion, ImageIcon[] listaIconos, ImageIcon[] listaColores) {
+    // ==============================================================================
+    // MÉTODOS DE INICIALIZACIÓN DE LA UI
+    // ==============================================================================
+    
+    /**
+     * Inicializa el arreglo de productos creando los paneles correspondientes.
+     */
+    private void inicializarProductos() {
+        listaProductos = new JPanel[]{
+            crearProducto("Converse", 1599, "Tenis Converse Chuck Taylor All Star Negros en Bota de Lona Unisex", converse, coloresConverse),
+            crearProducto("Air Force 1", 2399, "Tenis Unisex Nike Air Force 1 '07 Cw2288-111", airForce, coloresAirForce),
+            crearProducto("Air Jordan 3", 4299, "Nike WMNS Air Jordan 3 RETRO", airJordan, coloresJordan),
+            crearProducto("Campus 00s", 2299, "Tenis Adidas Campus 00's Clasico Original", campus, coloresCampus),
+            crearProducto("Stars", 799, "TENIS HOMBRE STARS CU413", stars, coloresStars),
+            crearProducto("UA Rogue 4", 1699, "Tenis deportivos Under Armour ligeros con suela blanca texturizada.", under, coloresUnder)
+        };
+    }
 
+    /**
+     * Configura el panel superior (Logo, menú hamburguesa, carrito, favoritos).
+     */
+    private void initNorte() {
+        panelNorte = new JPanel(new BorderLayout());
+        panelNorte.setPreferredSize(new Dimension(700, 75));
+        panelNorte.setBackground(Color.WHITE);
+
+        // Carga de imágenes para los botones superiores
+        iconoMenuClaro = new ImageIcon(getClass().getResource("menuB.png"));
+        iconoMenuOscuro = new ImageIcon(getClass().getResource("menu.png"));
+        iconoFavsClaro = new ImageIcon(getClass().getResource("favoritosB.png"));
+        iconoFavsOscuro = new ImageIcon(getClass().getResource("favoritos.png"));
+        iconoCarritoClaro = new ImageIcon(getClass().getResource("carritoB.png"));
+        iconoCarritoOscuro = new ImageIcon(getClass().getResource("carrito.png"));
+
+        // Botón Menú Hamburguesa
+        btnMenu = configurarBotonTransparente(new JButton(iconoMenuOscuro));
+        btnMenu.addActionListener(e -> {
+            menuActivado = !menuActivado;
+            panelMenu.setVisible(menuActivado);
+            revalidate();
+            repaint();
+        });
+
+        JLabel logo = new JLabel(new ImageIcon(getClass().getResource("logo.png")));
+        
+        // Botón Carrito
+        btnCarrito = configurarBotonTransparente(new JButton(iconoCarritoOscuro));
+        btnCarrito.addActionListener(e -> abrirVentanaCarrito());
+
+        // Botón Favoritos (anteriormente btnBuscar)
+        btnFavoritos = configurarBotonTransparente(new JButton(iconoFavsOscuro));
+        btnFavoritos.addActionListener(e -> abrirVentanaFavoritos());
+
+        // Ensamblado del panel Norte
+        JPanel panelIzquierdo = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        panelIzquierdo.add(btnMenu);
+        panelIzquierdo.setOpaque(false); // Permite heredar el color del panelNorte
+
+        JPanel panelDerecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+        panelDerecha.add(btnFavoritos);
+        panelDerecha.add(btnCarrito);
+        panelDerecha.setOpaque(false);
+
+        panelNorte.add(panelIzquierdo, BorderLayout.WEST);
+        panelNorte.add(logo, BorderLayout.CENTER);
+        panelNorte.add(panelDerecha, BorderLayout.EAST);
+    }
+
+    /**
+     * Configura el menú lateral desplegable.
+     */
+    private void initMenuLateral() {
+        panelMenu = new JPanel();
+        panelMenu.setBackground(Color.BLACK);
+        panelMenu.setPreferredSize(new Dimension(150, getHeight()));
+        panelMenu.setLayout(new BoxLayout(panelMenu, BoxLayout.Y_AXIS));
+
+        // Botón Inicio
+        JButton inicio = new JButton("Inicio");
+        configurarBotonMenuLateral(inicio);
+        panelMenu.add(inicio);
+
+        // Botón Modo Oscuro
+        JButton oscuro = new JButton("Modo Oscuro");
+        configurarBotonMenuLateral(oscuro);
+        oscuro.addActionListener(e -> toggleModoOscuro());
+        panelMenu.add(oscuro);
+        
+        // Botón Créditos
+        JButton creditos = new JButton("Créditos");
+        configurarBotonMenuLateral(creditos);
+        creditos.addActionListener(e -> {
+            JOptionPane.showMessageDialog(panelCentro, 
+                "Créditos:\n" +
+                "Desarrollado por el equipo escolar del proyecto.", 
+                "Créditos", 
+                JOptionPane.INFORMATION_MESSAGE);
+        });
+        panelMenu.add(creditos);
+        
+        panelMenu.setVisible(false); // Inicia oculto
+        add(panelMenu, BorderLayout.WEST);
+    }
+
+    /**
+     * Configura el área central donde se encuentra el carrusel de anuncios.
+     */
+    private void initCentro() {
+        panelCentro = new JPanel(new GridBagLayout());
+        panelCentro.setBackground(new Color(220, 220, 220));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        JLabel anuncios = new JLabel();
+        
+        ImageIcon[] listaAnuncios = {
+            new ImageIcon(getClass().getResource("Banner (1).png")),
+            new ImageIcon(getClass().getResource("Banner (2).png")),
+            new ImageIcon(getClass().getResource("Banner (3).png")),
+            new ImageIcon(getClass().getResource("Banner (4).png")),
+            new ImageIcon(getClass().getResource("Banner (5).png"))
+        };
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        anuncios.setPreferredSize(new Dimension(ANCHO_ANUNCIOS, ALTO_ANUNCIOS));
+        anuncios.setIcon(escalarImagen(listaAnuncios[0], ANCHO_ANUNCIOS, ALTO_ANUNCIOS));
+        
+        panelCentro.add(anuncios, gbc);
+        
+        // Temporizador para el carrusel (5 segundos)
+        Timer timer = new Timer(5000, new ActionListener() {
+            int i = 1;
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                anuncios.setIcon(escalarImagen(listaAnuncios[i], ANCHO_ANUNCIOS, ALTO_ANUNCIOS));
+                i = (i + 1) % listaAnuncios.length; // Lógica más limpia para reiniciar el índice
+            }
+        });
+        timer.start();
+    }
+
+    // ==============================================================================
+    // MÉTODOS PARA CREACIÓN Y GESTIÓN DE PRODUCTOS
+    // ==============================================================================
+
+    /**
+     * Crea un panel individual para un producto que se mostrará en el catálogo.
+     */
+    private JPanel crearProducto(String nombre, int precio, String descripcion, ImageIcon[] listaIconos, ImageIcon[] listaColores) {
         JPanel panel = new JPanel();
         panel.setPreferredSize(new Dimension(150, 180));
         panel.setOpaque(false);
@@ -288,10 +393,9 @@ public class Ventana extends JFrame {
 
         JLabel imagen = new JLabel("", SwingConstants.CENTER);
         imagen.setPreferredSize(new Dimension(130, 130));
-        imagen.setIcon(new ImageIcon(listaIconos[0].getImage().getScaledInstance(imagen.getPreferredSize().width, imagen.getPreferredSize().height, Image.SCALE_SMOOTH)));
+        imagen.setIcon(escalarImagen(listaIconos[0], imagen.getPreferredSize().width, imagen.getPreferredSize().height));
 
-        JPanel panelTexto = new JPanel();
-        panelTexto.setLayout(new GridLayout(3, 1));
+        JPanel panelTexto = new JPanel(new GridLayout(3, 1));
         panelTexto.setOpaque(false);
 
         JLabel labelNombre = new JLabel(nombre, SwingConstants.CENTER);
@@ -306,358 +410,315 @@ public class Ventana extends JFrame {
         panel.add(imagen, BorderLayout.NORTH);
         panel.add(panelTexto, BorderLayout.CENTER);
 
-        // Eventos del ratón para el efecto hover y el clic
+        // Eventos del ratón (Hover y Click)
         panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 panel.setPreferredSize(new Dimension(200, 220));
-                panel.revalidate();
                 panel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
+                panel.revalidate();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 panel.setPreferredSize(new Dimension(150, 180));
-                panel.revalidate();
                 panel.setBorder(null);
+                panel.revalidate();
             }
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Abre una ventana sencilla con el nombre del modelo al hacer clic
-                JFrame detalleTenis = new JFrame(nombre);
-                JPanel panelTenis = new JPanel(new FlowLayout());
-
-                panelTenis.setBackground(Color.WHITE);
-                mostrarTenis(panelTenis, listaIconos, listaColores, descripcion, precio, nombre);
-                detalleTenis.add(panelTenis);
-                detalleTenis.setSize(750, 500);
-                detalleTenis.setLocationRelativeTo(ventana);
-                detalleTenis.setResizable(false);
-                detalleTenis.setVisible(true);
+                abrirDetalleProducto(nombre, precio, descripcion, listaIconos, listaColores);
             }
         });
         return panel;
     }
 
-    private void initNorte() {
-        panelNorte = new JPanel(new BorderLayout());
-        panelNorte.setPreferredSize(new Dimension(700, 75));
-        panelNorte.setBackground(Color.WHITE);
-
-        // Carga de imágenes para el menú superior
-        iconoMenuClaro = new ImageIcon(getClass().getResource("menuB.png"));
-        iconoMenuOscuro = new ImageIcon(getClass().getResource("menu.png"));
-        iconoFavsClaro = new ImageIcon(getClass().getResource("favoritosB.png"));
-        iconoFavsOscuro = new ImageIcon(getClass().getResource("favoritos.png"));
-        iconoCarritoClaro = new ImageIcon(getClass().getResource("carritoB.png"));
-        iconoCarritoOscuro = new ImageIcon(getClass().getResource("carrito.png"));
-        iconoAdelanteClaro = new ImageIcon(getClass().getResource("AdelanteB.png"));
-        iconoAdelanteOscuro = new ImageIcon(getClass().getResource("Adelante.png"));
-        iconoAtrasClaro = new ImageIcon(getClass().getResource("AtrasB.png"));
-        iconoAtrasOscuro = new ImageIcon(getClass().getResource("Atras.png"));
-
-        btnMenu = new JButton(iconoMenuOscuro);
-        // Funcionamiento del boton del menu
-        btnMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                activedMenu = !activedMenu;
-                panelMenu.setVisible(activedMenu);
-                ventana.revalidate();
-                ventana.repaint();
-            }
-        });
-        btnMenu.setContentAreaFilled(false);
-        btnMenu.setBorderPainted(false);
-        btnMenu.setFocusPainted(false);
-
-        JLabel logo = new JLabel(new ImageIcon(getClass().getResource("logo.png")));
-        btnCarrito = new JButton(new ImageIcon(getClass().getResource("carrito.png")));
-
-        // Funcionamiento del botón del carrito (Panel Superior)
-        btnCarrito.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame ventanaCarrito = new JFrame("Carrito de Compras");
-                JPanel panelCarrito = new JPanel(new FlowLayout());
-                panelCarrito.setBackground(Color.WHITE);
-                JButton comprar = new JButton();
-                int total = 0;
-                
-                for (CarritoItem item : carrito) {
-                    JPanel prod = new JPanel(new BorderLayout());
-                    prod.setBackground(Color.WHITE);
-
-                    JLabel img = new JLabel(new ImageIcon(
-                            item.imagen.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)
-                    ));
-                    JLabel nombre = new JLabel(item.nombre, SwingConstants.CENTER);
-                    nombre.setBackground(Color.WHITE);
-
-                    comprar.setBackground(Color.BLACK);
-                    comprar.setForeground(Color.WHITE);
-                    prod.add(img, BorderLayout.CENTER);
-                    prod.add(nombre, BorderLayout.NORTH);
-
-                    panelCarrito.add(prod);
-                    total += item.precio;
-                    comprar.setText(String.format("Comprar $%d MNX", total));
-                }
-                    ventanaCarrito.add(comprar, BorderLayout.SOUTH);
-                ventanaCarrito.add(new JScrollPane(panelCarrito));
-                ventanaCarrito.setSize(600, 400);
-                ventanaCarrito.setLocationRelativeTo(ventana);
-                ventanaCarrito.setVisible(true);
-            }
-        });
-        btnCarrito.setContentAreaFilled(false);
-        btnCarrito.setBorderPainted(false);
-        btnCarrito.setFocusPainted(false);
-
-        btnBuscar = new JButton(new ImageIcon(getClass().getResource("favoritos.png")));
-        btnBuscar.setContentAreaFilled(false);
-        btnBuscar.setBorderPainted(false);
-        btnBuscar.setFocusPainted(false);
-        btnBuscar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame ventanaFavs = new JFrame("Favoritos");
-                JPanel panelFavs = new JPanel(new FlowLayout());
-                panelFavs.setBackground(Color.WHITE);
-
-                // Mostrar todos los favoritos
-                for (JPanel prod : favoritos) {
-                    panelFavs.add(prod);
-                }
-
-                ventanaFavs.add(new JScrollPane(panelFavs)); // scroll si hay muchos
-                ventanaFavs.setSize(600, 400);
-                ventanaFavs.setLocationRelativeTo(ventana);
-                ventanaFavs.setVisible(true);
-            }
-        });
-
-        JPanel panelIzquierdo = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        panelIzquierdo.add(btnMenu);
-        panelIzquierdo.setBackground(Color.WHITE);
-
-        JPanel panelDerecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-        panelDerecha.add(btnBuscar);
-        panelDerecha.add(btnCarrito);
-        panelDerecha.setBackground(Color.WHITE);
-
-        panelNorte.add(panelIzquierdo, BorderLayout.WEST);
-        panelNorte.add(logo, BorderLayout.CENTER);
-        panelNorte.add(panelDerecha, BorderLayout.EAST);
+    /**
+     * Abre una ventana con los detalles completos de un modelo específico.
+     */
+    private void abrirDetalleProducto(String nombre, int precio, String desc, ImageIcon[] listaIconos, ImageIcon[] listaColores) {
+        JFrame detalleTenis = new JFrame(nombre);
+        // Evita que la aplicación entera se cierre si solo cerramos el producto
+        detalleTenis.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
+        
+        JPanel panelTenis = new JPanel(new FlowLayout());
+        panelTenis.setBackground(Color.WHITE);
+        
+        mostrarTenis(panelTenis, listaIconos, listaColores, desc, precio, nombre);
+        
+        detalleTenis.add(panelTenis);
+        detalleTenis.setSize(750, 500);
+        detalleTenis.setLocationRelativeTo(this);
+        detalleTenis.setResizable(false);
+        detalleTenis.setVisible(true);
     }
 
-    private void initCentro() {
-        // Inicialización a nivel de clase
-        panelCentro = new JPanel(new GridBagLayout());
-        panelCentro.setBackground(new Color(220, 220, 220));
-
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        JLabel anuncios = new JLabel();
-        ImageIcon listaAnuncios[] = {
-            new ImageIcon(getClass().getResource("Banner (1).png")),
-            new ImageIcon(getClass().getResource("Banner (2).png")),
-            new ImageIcon(getClass().getResource("Banner (3).png")),
-            new ImageIcon(getClass().getResource("Banner (4).png")),
-            new ImageIcon(getClass().getResource("Banner (5).png"))
-        };
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        anuncios.setPreferredSize(new Dimension(anchoAnuncios, altoAnuncios));
-        anuncios.setIcon(new ImageIcon(listaAnuncios[0].getImage().getScaledInstance(anchoAnuncios, altoAnuncios, Image.SCALE_SMOOTH)));
-        panelCentro.add(anuncios, gbc);
-        Timer timer;
-        timer = new Timer(5000, new ActionListener() {
-            int i = 1;
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                anuncios.setIcon(new ImageIcon(listaAnuncios[i].getImage().getScaledInstance(anchoAnuncios, altoAnuncios, Image.SCALE_SMOOTH)));
-                i++;
-                if (i >= listaAnuncios.length) {
-                    i = 0;
-                }
-            }
-        });
-        timer.start();
-    }
-
+    /**
+     * Construye el contenido interno de la ventana de detalles de un producto (Variantes, botones).
+     */
     private void mostrarTenis(JPanel panel, ImageIcon[] listaIconos, ImageIcon[] listaColores, String desc, int prec, String nombre) {
-        JRadioButton colores[] = new JRadioButton[listaIconos.length];
+        JRadioButton[] colores = new JRadioButton[listaIconos.length];
         ButtonGroup grupoColores = new ButtonGroup();
-        JLabel lblTeni = new JLabel(new ImageIcon(listaIconos[0].getImage().getScaledInstance(400, 400, Image.SCALE_SMOOTH)));
+        
+        JLabel lblTeni = new JLabel(escalarImagen(listaIconos[0], 400, 400));
+        
         JPanel panelDetallesTenis = new JPanel();
+        panelDetallesTenis.setLayout(new BoxLayout(panelDetallesTenis, BoxLayout.Y_AXIS));
+        panelDetallesTenis.setPreferredSize(new Dimension(300, 300));
+        panelDetallesTenis.setBackground(Color.WHITE);
+
         JLabel descripcion = new JLabel("<html>" + desc + "</html>");
-        JLabel costo = new JLabel(String.format("$%d MXN", prec));
-        JButton comprar = new JButton("Comprar");
-        JButton btnCarrito = new JButton(new ImageIcon(getClass().getResource("Carrito_blanco.png")));
-
-        // Agregar producto a la ventana de carrito
-        btnCarrito.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                carrito.add(new CarritoItem(nombre, listaIconos[0], prec));
-                JOptionPane.showMessageDialog(panel, "Producto agregado al carrito");
-            }
-        });
-        JCheckBox favs = new JCheckBox(new ImageIcon(getClass().getResource("favoritos.png")));
-
-        // Agregar producto a la ventana de favoritos
-        favs.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (favs.isSelected()) {
-                    favs.setIcon(new ImageIcon(getClass().getResource("favorito_Seleccionado.png")));
-                    favoritos.add(panel); // agrega el panel del producto a la lista
-                } else {
-                    favs.setIcon(new ImageIcon(getClass().getResource("favoritos.png")));
-                    favoritos.remove(panel); // lo quita de la lista si se desmarca
-                }
-            }
-        });
-
         descripcion.setFont(new Font("Arial", Font.PLAIN, 16));
         descripcion.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        JLabel costo = new JLabel(String.format("$%d MXN", prec));
         costo.setFont(new Font("Arial", Font.BOLD, 18));
         costo.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        panelDetallesTenis.setPreferredSize(new Dimension(300, 300));
-        panelDetallesTenis.setLayout(new BoxLayout(panelDetallesTenis, BoxLayout.Y_AXIS));
-        panelDetallesTenis.setBackground(Color.WHITE);
-
-        Dimension tamBotones = new Dimension(panelDetallesTenis.getPreferredSize().width, 50);
-
-        comprar.setPreferredSize(tamBotones);
-        comprar.setMaximumSize(tamBotones);
-        comprar.setBackground(Color.BLACK);
-        comprar.setForeground(Color.WHITE);
-        comprar.setAlignmentX(Component.LEFT_ALIGNMENT);
-        btnCarrito.setPreferredSize(tamBotones);
-        btnCarrito.setMaximumSize(tamBotones);
-        btnCarrito.setBackground(Color.BLACK);
-        btnCarrito.setForeground(Color.WHITE);
-        btnCarrito.setAlignmentX(Component.LEFT_ALIGNMENT);
-
+        // Botón Comprar Directo
+        JButton comprar = new JButton("Comprar");
+        configurarBotonAccion(comprar, panelDetallesTenis.getPreferredSize().width);
+        comprar.addActionListener(e -> JOptionPane.showMessageDialog(panel, "Compraste el producto exitosamente."));
+        
+        // Botón Añadir a Carrito
+        JButton btnAddCarrito = new JButton(new ImageIcon(getClass().getResource("Carrito_blanco.png")));
+        configurarBotonAccion(btnAddCarrito, panelDetallesTenis.getPreferredSize().width);
+        btnAddCarrito.addActionListener(e -> {
+            carrito.add(new CarritoItem(nombre, listaIconos[0], prec));
+            JOptionPane.showMessageDialog(panel, "Producto agregado al carrito");
+        });
+        
+        // Checkbox Favoritos
+        JCheckBox favs = new JCheckBox(new ImageIcon(getClass().getResource("favoritos.png")));
         favs.setContentAreaFilled(false);
+        favs.addItemListener(e -> {
+            if (favs.isSelected()) {
+                favs.setIcon(new ImageIcon(getClass().getResource("favorito_Seleccionado.png")));
+                favoritos.add(panel); 
+            } else {
+                favs.setIcon(new ImageIcon(getClass().getResource("favoritos.png")));
+                favoritos.remove(panel);
+            }
+        });
 
+        // Ensamblar panel de detalles
         panelDetallesTenis.add(descripcion);
         panelDetallesTenis.add(Box.createVerticalStrut(30));
         panelDetallesTenis.add(costo);
         panelDetallesTenis.add(Box.createVerticalStrut(30));
         panelDetallesTenis.add(comprar);
         panelDetallesTenis.add(Box.createVerticalStrut(30));
-        panelDetallesTenis.add(btnCarrito);
+        panelDetallesTenis.add(btnAddCarrito);
         panelDetallesTenis.add(Box.createVerticalStrut(30));
         panelDetallesTenis.add(favs);
 
         panel.add(lblTeni);
         panel.add(panelDetallesTenis);
+        
+        // Generar selectores de colores
         for (int i = 0; i < colores.length; i++) {
-            colores[i] = new JRadioButton("", new ImageIcon(listaColores[i].getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)), (i == 0));
+            colores[i] = new JRadioButton("", escalarImagen(listaColores[i], 20, 20), (i == 0));
             colores[i].setPreferredSize(new Dimension(30, 30));
-            colores[i].setSelectedIcon(new ImageIcon(listaColores[i + (listaColores.length / 2)].getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+            // Aseguramos no salir de índice para la selección
+            int iconoSeleccion = i + (listaColores.length / 2);
+            if (iconoSeleccion < listaColores.length) {
+                colores[i].setSelectedIcon(escalarImagen(listaColores[iconoSeleccion], 25, 25));
+            }
             colores[i].setBackground(Color.WHITE);
             grupoColores.add(colores[i]);
             panel.add(colores[i]);
+            
             final int indice = i;
-            colores[i].addItemListener(new ItemListener() {
-                @Override
-                public void itemStateChanged(ItemEvent e) {
-                    lblTeni.setIcon(new ImageIcon(listaIconos[indice].getImage().getScaledInstance(400, 400, Image.SCALE_SMOOTH)));
+            colores[i].addItemListener(e -> {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    lblTeni.setIcon(escalarImagen(listaIconos[indice], 400, 400));
                 }
             });
         }
     }
 
-    private void mostrar(JPanel panelProducto) {
-        for (int i = 0; i < listaProductos.length; i++) {
-            panelProducto.add(listaProductos[i]);
-            listaProductos[i].setVisible(false);
+    /**
+     * Actualiza el panel inferior mostrando solo los productos de la página actual.
+     */
+    private void mostrarProductosVisibles() {
+        panelProductos.removeAll(); // Limpiar el panel antes de añadir nuevos
+        panelProductos.add(atras);
+        
+        int inicio = PRODUCTOS_POR_PAGINA * (intervalo - 1);
+        int fin = Math.min(inicio + PRODUCTOS_POR_PAGINA, listaProductos.length);
+        
+        for (int i = inicio; i < fin; i++) {
+            panelProductos.add(listaProductos[i]);
         }
-        for (int i = (rango * (interbalo - 1)); i < (rango * interbalo); i++) {
-            panelProducto.add(listaProductos[i]);
-            listaProductos[i].setVisible(true);
-        }
-        panelProducto.add(adelante);
+        
+        panelProductos.add(adelante);
+        
+        // Repintar para que los cambios surtan efecto en pantalla
+        panelProductos.revalidate();
+        panelProductos.repaint();
     }
 
-    private void atajo(JFrame panel) {
-        panel.addKeyListener(new KeyListener() {
+    // ==============================================================================
+    // VENTANAS SECUNDARIAS (Carrito y Favoritos)
+    // ==============================================================================
+    
+    private void abrirVentanaCarrito() {
+        JFrame ventanaCarrito = new JFrame("Carrito de Compras");
+        ventanaCarrito.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        JPanel panelContenedorCarrito = new JPanel(new FlowLayout());
+        panelContenedorCarrito.setBackground(Color.WHITE);
+        
+        JButton btnComprarTodo = new JButton();
+        btnComprarTodo.setBackground(Color.BLACK);
+        btnComprarTodo.setForeground(Color.WHITE);
+        
+        btnComprarTodo.addActionListener(e -> {
+            if(carrito.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "El carrito está vacío.");
+                return;
+            }
+            carritoComprado = true;
+            JOptionPane.showMessageDialog(this, "¡Compra realizada con éxito!");
+            carrito.clear();
+            ventanaCarrito.dispose();
+        });
+        
+        int total = 0;
+        
+        for (CarritoItem item : carrito) {
+            JPanel prod = new JPanel(new BorderLayout());
+            prod.setBackground(Color.WHITE);
+
+            JLabel img = new JLabel(escalarImagen(item.imagen, 100, 100));
+            JLabel nombre = new JLabel(item.nombre, SwingConstants.CENTER);
+
+            prod.add(img, BorderLayout.CENTER);
+            prod.add(nombre, BorderLayout.NORTH);
+
+            panelContenedorCarrito.add(prod);
+            total += item.precio;
+        }
+        
+        btnComprarTodo.setText(String.format("Comprar todo: $%d MXN", total));
+        
+        ventanaCarrito.add(new JScrollPane(panelContenedorCarrito), BorderLayout.CENTER);
+        ventanaCarrito.add(btnComprarTodo, BorderLayout.SOUTH);
+        ventanaCarrito.setSize(600, 400);
+        ventanaCarrito.setLocationRelativeTo(this);
+        ventanaCarrito.setVisible(true);
+    }
+    
+    private void abrirVentanaFavoritos() {
+        JFrame ventanaFavs = new JFrame("Mis Favoritos");
+        ventanaFavs.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        JPanel panelFavs = new JPanel(new FlowLayout());
+        panelFavs.setBackground(Color.WHITE);
+
+        for (JPanel prod : favoritos) {
+            panelFavs.add(prod);
+        }
+
+        ventanaFavs.add(new JScrollPane(panelFavs));
+        ventanaFavs.setSize(600, 400);
+        ventanaFavs.setLocationRelativeTo(this);
+        ventanaFavs.setVisible(true);
+    }
+
+    // ==============================================================================
+    // UTILIDADES GLOBALES (Tema oscuro, atajos y configuración UI)
+    // ==============================================================================
+
+    private void atajoTeclado() {
+        this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_T) {
                     toggleModoOscuro();
                 }
             }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
-
         });
-        panel.setFocusable(true);
-        panel.requestFocusInWindow();
+        this.setFocusable(true);
+        this.requestFocusInWindow();
     }
 
     private void toggleModoOscuro() {
         modoOscuro = !modoOscuro;
 
-        Color fondo = modoOscuro ? Color.BLACK : Color.WHITE;
+        Color fondo = modoOscuro ? new Color(30,30,30) : Color.WHITE;
         Color texto = modoOscuro ? Color.WHITE : Color.BLACK;
 
-        // Cambiando dinámicamente el icono del menú hamburguesa
+        // Actualizar iconos
         btnMenu.setIcon(modoOscuro ? iconoMenuClaro : iconoMenuOscuro);
         btnCarrito.setIcon(modoOscuro ? iconoCarritoClaro : iconoCarritoOscuro);
-        btnBuscar.setIcon(modoOscuro ? iconoFavsClaro : iconoFavsOscuro);
+        btnFavoritos.setIcon(modoOscuro ? iconoFavsClaro : iconoFavsOscuro);
         adelante.setIcon(modoOscuro ? iconoAdelanteClaro : iconoAdelanteOscuro);
         atras.setIcon(modoOscuro ? iconoAtrasClaro : iconoAtrasOscuro);
 
-        // Paneles principales
+        // Actualizar colores base de paneles
         panelNorte.setBackground(fondo);
-        panelMenu.setBackground(Color.BLACK); // Mantiene el fondo del menú constante
         panelCentro.setBackground(fondo);
         panelProductos.setBackground(fondo);
         getContentPane().setBackground(fondo);
 
-        // Aplicar tema a todos los componentes dentro de cada panel
-        aplicarTema(panelNorte, fondo, texto);
-        aplicarTema(panelMenu, fondo, texto);
-        aplicarTema(panelCentro, fondo, texto);
-        aplicarTema(panelProductos, fondo, texto);
+        // Propagar el tema recursivamente a componentes hijos
+        aplicarTemaRecursivo(panelNorte, fondo, texto);
+        aplicarTemaRecursivo(panelCentro, fondo, texto);
+        aplicarTemaRecursivo(panelProductos, fondo, texto);
 
-        ventana.revalidate();
-        ventana.repaint();
+        revalidate();
+        repaint();
     }
 
-    private void aplicarTema(Component c, Color fondo, Color texto) {
+    private void aplicarTemaRecursivo(Component c, Color fondo, Color texto) {
         if (c instanceof JPanel) {
             c.setBackground(fondo);
             for (Component hijo : ((JPanel) c).getComponents()) {
-                aplicarTema(hijo, fondo, texto);
+                aplicarTemaRecursivo(hijo, fondo, texto);
             }
         } else if (c instanceof JButton) {
-            c.setBackground(fondo);
+            // No cambiamos el fondo de los botones con imágenes transparentes
+            if(((JButton)c).getIcon() == null) {
+                c.setBackground(fondo);
+            }
             ((JButton) c).setForeground(texto);
         } else if (c instanceof JLabel) {
             ((JLabel) c).setForeground(texto);
-        } else if (c instanceof JCheckBox) {
+        } else if (c instanceof JCheckBox || c instanceof JRadioButton) {
             c.setBackground(fondo);
-            ((JCheckBox) c).setForeground(texto);
-        } else if (c instanceof JRadioButton) {
-            c.setBackground(fondo);
-            ((JRadioButton) c).setForeground(texto);
+            c.setForeground(texto);
         }
+    }
+
+    /**
+     * Métodos auxiliares para reducir código repetitivo al crear botones e imágenes
+     */
+    private ImageIcon escalarImagen(ImageIcon iconoBase, int ancho, int alto) {
+        return new ImageIcon(iconoBase.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH));
+    }
+    
+    private JButton configurarBotonTransparente(JButton btn) {
+        btn.setContentAreaFilled(false);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        return btn;
+    }
+    
+    private void configurarBotonMenuLateral(JButton btn) {
+        btn.setForeground(Color.WHITE);
+        btn.setBackground(Color.BLACK);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+    }
+    
+    private void configurarBotonAccion(JButton btn, int ancho) {
+        Dimension tam = new Dimension(ancho, 50);
+        btn.setPreferredSize(tam);
+        btn.setMaximumSize(tam);
+        btn.setBackground(Color.BLACK);
+        btn.setForeground(Color.WHITE);
+        btn.setAlignmentX(Component.LEFT_ALIGNMENT);
     }
 }
