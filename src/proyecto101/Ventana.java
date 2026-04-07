@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import botonesCompra.Comprar;
 
 /**
  * Clase principal de la Interfaz Gráfica para la Tienda de Tenis.
@@ -328,11 +329,14 @@ public class Ventana extends JFrame {
         JButton creditos = new JButton("Créditos");
         configurarBotonMenuLateral(creditos);
         creditos.addActionListener(e -> {
-            JOptionPane.showMessageDialog(panelCentro, 
-                "Créditos:\n" +
-                "Desarrollado por el equipo escolar del proyecto.", 
-                "Créditos", 
-                JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(panelCentro, """
+                                                       Créditos:
+                                                       Marcos García López
+                                                       Pedro Tomás Gutiárrez Gonzáles
+                                                       Ricardo Ottmar Gutiérrez Guzmán
+                                                       Diego Palacio Flores
+                                                       Maria Guadalupe Zuñiga Alcantar
+                                                       """);
         });
         panelMenu.add(creditos);
         
@@ -477,13 +481,11 @@ public class Ventana extends JFrame {
         costo.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // Botón Comprar Directo
-        JButton comprar = new JButton("Comprar");
-        configurarBotonAccion(comprar, panelDetallesTenis.getPreferredSize().width);
+        Comprar comprar = new Comprar(Comprar.COMPRAR);
         comprar.addActionListener(e -> JOptionPane.showMessageDialog(panel, "Compraste el producto exitosamente."));
         
         // Botón Añadir a Carrito
-        JButton btnAddCarrito = new JButton(new ImageIcon(getClass().getResource("Carrito_blanco.png")));
-        configurarBotonAccion(btnAddCarrito, panelDetallesTenis.getPreferredSize().width);
+        Comprar btnAddCarrito = new Comprar(Comprar.CARRITO);
         btnAddCarrito.addActionListener(e -> {
             carrito.add(new CarritoItem(nombre, listaIconos[0], prec));
             JOptionPane.showMessageDialog(panel, "Producto agregado al carrito");
@@ -711,14 +713,5 @@ public class Ventana extends JFrame {
         btn.setBackground(Color.BLACK);
         btn.setBorderPainted(false);
         btn.setFocusPainted(false);
-    }
-    
-    private void configurarBotonAccion(JButton btn, int ancho) {
-        Dimension tam = new Dimension(ancho, 50);
-        btn.setPreferredSize(tam);
-        btn.setMaximumSize(tam);
-        btn.setBackground(Color.BLACK);
-        btn.setForeground(Color.WHITE);
-        btn.setAlignmentX(Component.LEFT_ALIGNMENT);
     }
 }
