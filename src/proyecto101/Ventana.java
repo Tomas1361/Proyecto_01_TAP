@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import botonesCompra.Comprar;
+import botonesCompra.*;
 
 /**
  * Clase principal de la Interfaz Gráfica para la Tienda de Tenis.
@@ -65,13 +65,10 @@ public class Ventana extends JFrame {
         new ImageIcon(getClass().getResource("ConverseAzul.png")),
         new ImageIcon(getClass().getResource("ConverseRojo.png"))
     };
-    private ImageIcon[] coloresConverse = {
-        new ImageIcon(getClass().getResource("Negro.png")),
-        new ImageIcon(getClass().getResource("Azul.png")),
-        new ImageIcon(getClass().getResource("Rojo.png")),
-        new ImageIcon(getClass().getResource("Borde_Negro.png")),
-        new ImageIcon(getClass().getResource("Borde_Azul.png")),
-        new ImageIcon(getClass().getResource("Borde_Rojo.png"))
+    private JRadioButton[] coloresConverse = {
+        new botonesColores(botonesColores.NEGRO),
+        new botonesColores(botonesColores.AZUL),
+        new botonesColores(botonesColores.ROJO)
     };
     
     private ImageIcon[] airForce = {
@@ -79,13 +76,10 @@ public class Ventana extends JFrame {
         new ImageIcon(getClass().getResource("AirForceNegro.png")),
         new ImageIcon(getClass().getResource("AirForceRojo.png"))
     };
-    private ImageIcon[] coloresAirForce = {
-        new ImageIcon(getClass().getResource("Blanco.png")),
-        new ImageIcon(getClass().getResource("Blanco_Negro.png")),
-        new ImageIcon(getClass().getResource("Blanco_Rojo.png")),
-        new ImageIcon(getClass().getResource("Borde_Blanco.png")),
-        new ImageIcon(getClass().getResource("Borde_Blanco_Negro.png")),
-        new ImageIcon(getClass().getResource("Borde_Blanco_Rojo.png"))
+    private JRadioButton[] coloresAirForce = {
+        new botonesColores(botonesColores.BLANCO),
+        new botonesColores(botonesColores.NEGRO),
+        new botonesColores(botonesColores.ROJO)
     };
     
     private ImageIcon[] airJordan = {
@@ -94,15 +88,11 @@ public class Ventana extends JFrame {
         new ImageIcon(getClass().getResource("AirJordanBlanco.png")),
         new ImageIcon(getClass().getResource("AirJordanNegro.png"))
     };
-    private ImageIcon[] coloresJordan = {
-        new ImageIcon(getClass().getResource("Blanco_Negro.png")),
-        new ImageIcon(getClass().getResource("Blanco_Azul.png")),
-        new ImageIcon(getClass().getResource("Blanco.png")),
-        new ImageIcon(getClass().getResource("Negro.png")),
-        new ImageIcon(getClass().getResource("Borde_Blanco_Negro.png")),
-        new ImageIcon(getClass().getResource("Borde_Blanco_Azul.png")),
-        new ImageIcon(getClass().getResource("Borde_Blanco.png")),
-        new ImageIcon(getClass().getResource("Borde_Negro.png"))
+    private JRadioButton[] coloresJordan = {
+        new botonesColores(botonesColores.BLANCO_NEGRO),
+        new botonesColores(botonesColores.BLANCO_AZUL),
+        new botonesColores(botonesColores.BLANCO),
+        new botonesColores(botonesColores.NEGRO)
     };
     
     private ImageIcon[] campus = {
@@ -111,26 +101,20 @@ public class Ventana extends JFrame {
         new ImageIcon(getClass().getResource("Campus00sNegro.png")),
         new ImageIcon(getClass().getResource("Campus00sNegroAzul.png"))
     };
-    private ImageIcon[] coloresCampus = {
-        new ImageIcon(getClass().getResource("Blanco.png")),
-        new ImageIcon(getClass().getResource("Blanco_Negro_Rojo.png")),
-        new ImageIcon(getClass().getResource("Negro.png")),
-        new ImageIcon(getClass().getResource("Azul.png")),
-        new ImageIcon(getClass().getResource("Borde_Blanco.png")),
-        new ImageIcon(getClass().getResource("Borde_Blanco_Negro_Rojo.png")),
-        new ImageIcon(getClass().getResource("Borde_Negro.png")),
-        new ImageIcon(getClass().getResource("Borde_Azul.png"))
+    private JRadioButton[] coloresCampus = {
+        new botonesColores(botonesColores.BLANCO),
+        new botonesColores(botonesColores.BLANCO_NEGRO_ROJO),
+        new botonesColores(botonesColores.NEGRO),
+        new botonesColores(botonesColores.AZUL)
     };
     
     private ImageIcon[] stars = {
         new ImageIcon(getClass().getResource("StarsNegros.png")),
         new ImageIcon(getClass().getResource("StarsAmarillos.png"))
     };
-    private ImageIcon[] coloresStars = {
-        new ImageIcon(getClass().getResource("Blanco_Negro.png")),
-        new ImageIcon(getClass().getResource("Amarillo_Blanco_Azul.png")),
-        new ImageIcon(getClass().getResource("Borde_Blanco_Negro.png")),
-        new ImageIcon(getClass().getResource("Borde_Amarillo_Blanco_Azul.png"))
+    private JRadioButton[] coloresStars = {
+        new botonesColores(botonesColores.BLANCO_NEGRO),
+        new botonesColores(botonesColores.AMARILLO_BLANCO_AZUL)
     };
     
     private ImageIcon[] under = {
@@ -140,17 +124,12 @@ public class Ventana extends JFrame {
         new ImageIcon(getClass().getResource("Under_Rojo.png")),
         new ImageIcon(getClass().getResource("Under_Verde.png"))
     };
-    private ImageIcon[] coloresUnder = {
-        new ImageIcon(getClass().getResource("Negro.png")),
-        new ImageIcon(getClass().getResource("Gris.png")),
-        new ImageIcon(getClass().getResource("Azul.png")),
-        new ImageIcon(getClass().getResource("Rojo.png")),
-        new ImageIcon(getClass().getResource("Verde.png")),
-        new ImageIcon(getClass().getResource("Borde_Negro.png")),
-        new ImageIcon(getClass().getResource("Borde_Gris.png")),
-        new ImageIcon(getClass().getResource("Borde_Azul.png")),
-        new ImageIcon(getClass().getResource("Borde_Rojo.png")),
-        new ImageIcon(getClass().getResource("Borde_Verde.png"))
+    private JRadioButton[] coloresUnder = {
+        new botonesColores(botonesColores.NEGRO),
+        new botonesColores(botonesColores.GRIS),
+        new botonesColores(botonesColores.AZUL),
+        new botonesColores(botonesColores.ROJO),
+        new botonesColores(botonesColores.VERDE)
     };
 
     // Array que contendrá todos los paneles de productos generados
@@ -389,7 +368,7 @@ public class Ventana extends JFrame {
     /**
      * Crea un panel individual para un producto que se mostrará en el catálogo.
      */
-    private JPanel crearProducto(String nombre, int precio, String descripcion, ImageIcon[] listaIconos, ImageIcon[] listaColores) {
+    private JPanel crearProducto(String nombre, int precio, String descripcion, ImageIcon[] listaIconos, JRadioButton[] listaColores) {
         JPanel panel = new JPanel();
         panel.setPreferredSize(new Dimension(150, 180));
         panel.setOpaque(false);
@@ -441,7 +420,7 @@ public class Ventana extends JFrame {
     /**
      * Abre una ventana con los detalles completos de un modelo específico.
      */
-    private void abrirDetalleProducto(String nombre, int precio, String desc, ImageIcon[] listaIconos, ImageIcon[] listaColores) {
+    private void abrirDetalleProducto(String nombre, int precio, String desc, ImageIcon[] listaIconos, JRadioButton[] listaColores) {
         JFrame detalleTenis = new JFrame(nombre);
         // Evita que la aplicación entera se cierre si solo cerramos el producto
         detalleTenis.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
@@ -461,7 +440,7 @@ public class Ventana extends JFrame {
     /**
      * Construye el contenido interno de la ventana de detalles de un producto (Variantes, botones).
      */
-    private void mostrarTenis(JPanel panel, ImageIcon[] listaIconos, ImageIcon[] listaColores, String desc, int prec, String nombre) {
+    private void mostrarTenis(JPanel panel, ImageIcon[] listaIconos, JRadioButton[] listaColores, String desc, int prec, String nombre) {
         JRadioButton[] colores = new JRadioButton[listaIconos.length];
         ButtonGroup grupoColores = new ButtonGroup();
         
@@ -520,14 +499,9 @@ public class Ventana extends JFrame {
         
         // Generar selectores de colores
         for (int i = 0; i < colores.length; i++) {
-            colores[i] = new JRadioButton("", escalarImagen(listaColores[i], 20, 20), (i == 0));
-            colores[i].setPreferredSize(new Dimension(30, 30));
+            colores[i] = listaColores[i];
+            colores[0].setSelected(true);
             // Aseguramos no salir de índice para la selección
-            int iconoSeleccion = i + (listaColores.length / 2);
-            if (iconoSeleccion < listaColores.length) {
-                colores[i].setSelectedIcon(escalarImagen(listaColores[iconoSeleccion], 25, 25));
-            }
-            colores[i].setBackground(Color.WHITE);
             grupoColores.add(colores[i]);
             panel.add(colores[i]);
             
