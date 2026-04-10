@@ -40,6 +40,7 @@ public class Ventana extends JFrame {
     private JPanel panelCentro;
     private JPanel panelProductos;
     private JPanel panelMenu;
+    private JPanel panelSur;
 
     // Botones de navegación y utilidades
     private JButton adelante;
@@ -157,6 +158,7 @@ public class Ventana extends JFrame {
         super("Tienda de tenis");
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBackground(Color.WHITE);
 
         // Habilitar atajo de teclado para modo oscuro
         atajoTeclado();
@@ -202,7 +204,8 @@ public class Ventana extends JFrame {
         // Inicializar las diferentes zonas de la ventana principal
         initNorte();
         initMenuLateral();
-        initCentro(); // Aquí se integran las imágenes del carrusel de ofertas
+        initCentro();// Aquí se integran las imágenes del carrusel de ofertas
+        initSur();
 
         // Mostrar los primeros productos al iniciar
         mostrarProductosVisibles();
@@ -213,7 +216,7 @@ public class Ventana extends JFrame {
         central.add(panelProductos, BorderLayout.SOUTH);
         
         add(central, BorderLayout.CENTER);
-        add(new JLabel("  Claro/Oscuro -> Ctrl + T"), BorderLayout.SOUTH);
+        add(panelSur, BorderLayout.SOUTH);
     }
 
     // ==============================================================================
@@ -359,6 +362,13 @@ public class Ventana extends JFrame {
             }
         });
         timer.start();
+    }
+    
+    private void initSur(){
+        panelSur = new JPanel(new FlowLayout());
+        panelSur.add(new JLabel("Claro/Oscuro -> Ctrl + T"));
+        panelSur.setBorder(BorderFactory.createLineBorder(new Color(191, 191, 191)));
+        panelSur.setBackground(Color.WHITE);
     }
 
     // ==============================================================================
@@ -608,16 +618,23 @@ public class Ventana extends JFrame {
     // ==============================================================================
 
     private void atajoTeclado() {
-        this.addKeyListener(new KeyAdapter() {
+        // 1. Obtenemos la raíz de toda la ventana
+        JRootPane rootPane = this.getRootPane();
+        
+        // 2. Pedimos el mapa de entrada con la regla mágica: "CUANDO LA VENTANA TENGA EL FOCO"
+        InputMap inputMap = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = rootPane.getActionMap();
+
+        // 3. Registramos el atajo de teclado (Ctrl + T) y le ponemos un nombre clave
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK), "cambiarTema");
+
+        // 4. Le decimos a Java qué código ejecutar cuando escuche ese nombre clave
+        actionMap.put("cambiarTema", new AbstractAction() {
             @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_T) {
-                    toggleModoOscuro();
-                }
+            public void actionPerformed(ActionEvent e) {
+                toggleModoOscuro();
             }
         });
-        this.setFocusable(true);
-        this.requestFocusInWindow();
     }
 
     private void toggleModoOscuro() {
@@ -637,12 +654,14 @@ public class Ventana extends JFrame {
         panelNorte.setBackground(fondo);
         panelCentro.setBackground(fondo);
         panelProductos.setBackground(fondo);
+        panelSur.setBackground(fondo);
         getContentPane().setBackground(fondo);
 
         // Propagar el tema recursivamente a componentes hijos
         aplicarTemaRecursivo(panelNorte, fondo, texto);
         aplicarTemaRecursivo(panelCentro, fondo, texto);
         aplicarTemaRecursivo(panelProductos, fondo, texto);
+        aplicarTemaRecursivo(panelSur, fondo, texto);
 
         revalidate();
         repaint();
