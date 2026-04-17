@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import botonesCompra.*;
+import AdminTemas.*;
 
 /**
  * Clase principal de la Interfaz Gráfica para la Tienda de Tenis.
@@ -133,7 +134,7 @@ public class Ventana extends JFrame {
         new botonesColores(botonesColores.VERDE)
     };
 
-    // Array que contendrá todos los paneles de productos generados
+    // Array que contendrá todos los paneles de productos generados.
     private JPanel[] listaProductos;
 
     // ==============================================================================
@@ -638,55 +639,34 @@ public class Ventana extends JFrame {
     }
 
     private void toggleModoOscuro() {
-        modoOscuro = !modoOscuro;
+        AdminTemas.toggleModoOscuro();
 
-        Color fondo = modoOscuro ? new Color(30,30,30) : Color.WHITE;
-        Color texto = modoOscuro ? Color.WHITE : Color.BLACK;
+    Color fondo = AdminTemas.getFondo();
+    Color texto = AdminTemas.getTexto();
 
-        // Actualizar iconos
-        btnMenu.setIcon(modoOscuro ? iconoMenuClaro : iconoMenuOscuro);
-        btnCarrito.setIcon(modoOscuro ? iconoCarritoClaro : iconoCarritoOscuro);
-        btnFavoritos.setIcon(modoOscuro ? iconoFavsClaro : iconoFavsOscuro);
-        adelante.setIcon(modoOscuro ? iconoAdelanteClaro : iconoAdelanteOscuro);
-        atras.setIcon(modoOscuro ? iconoAtrasClaro : iconoAtrasOscuro);
+    // Actualizar iconos
+    AdminTemas.actualizarIconos(btnMenu, iconoMenuClaro, iconoMenuOscuro,
+                                  btnCarrito, iconoCarritoClaro, iconoCarritoOscuro,
+                                  btnFavoritos, iconoFavsClaro, iconoFavsOscuro,
+                                  adelante, iconoAdelanteClaro, iconoAdelanteOscuro,
+                                  atras, iconoAtrasClaro, iconoAtrasOscuro);
 
-        // Actualizar colores base de paneles
-        panelNorte.setBackground(fondo);
-        panelCentro.setBackground(fondo);
-        panelProductos.setBackground(fondo);
-        panelSur.setBackground(fondo);
-        getContentPane().setBackground(fondo);
+    // Actualizar paneles
+    panelNorte.setBackground(fondo);
+    panelCentro.setBackground(fondo);
+    panelProductos.setBackground(fondo);
+    panelSur.setBackground(fondo);
+    getContentPane().setBackground(fondo);
 
-        // Propagar el tema recursivamente a componentes hijos
-        aplicarTemaRecursivo(panelNorte, fondo, texto);
-        aplicarTemaRecursivo(panelCentro, fondo, texto);
-        aplicarTemaRecursivo(panelProductos, fondo, texto);
-        aplicarTemaRecursivo(panelSur, fondo, texto);
+    // Propagar tema
+    AdminTemas.aplicarTemaRecursivo(panelNorte, fondo, texto);
+    AdminTemas.aplicarTemaRecursivo(panelCentro, fondo, texto);
+    AdminTemas.aplicarTemaRecursivo(panelProductos, fondo, texto);
+    AdminTemas.aplicarTemaRecursivo(panelSur, fondo, texto);
 
-        revalidate();
-        repaint();
+    revalidate();
+    repaint();
     }
-
-    private void aplicarTemaRecursivo(Component c, Color fondo, Color texto) {
-        if (c instanceof JPanel) {
-            c.setBackground(fondo);
-            for (Component hijo : ((JPanel) c).getComponents()) {
-                aplicarTemaRecursivo(hijo, fondo, texto);
-            }
-        } else if (c instanceof JButton) {
-            // No cambiamos el fondo de los botones con imágenes transparentes
-            if(((JButton)c).getIcon() == null) {
-                c.setBackground(fondo);
-            }
-            ((JButton) c).setForeground(texto);
-        } else if (c instanceof JLabel) {
-            ((JLabel) c).setForeground(texto);
-        } else if (c instanceof JCheckBox || c instanceof JRadioButton) {
-            c.setBackground(fondo);
-            c.setForeground(texto);
-        }
-    }
-
     /**
      * Métodos auxiliares para reducir código repetitivo al crear botones e imágenes
      */

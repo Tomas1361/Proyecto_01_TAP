@@ -65,10 +65,8 @@ public class Comprar extends JButton {
     }
 
     // =======================================================
-    // TUS MÉTODOS DE CONFIGURACIÓN
+    // MÉTODOS DE CONFIGURACIÓN
     // =======================================================
-    // Nota: Los cambié a 'void' porque modifican a 'this' directamente, 
-    // y usé 'MouseAdapter' para ahorrarte los métodos vacíos.
 
     private void Carrito(JButton carrito) {
         carrito.setIcon(new ImageIcon(getClass().getResource("/proyecto101/carritoB.png")));
